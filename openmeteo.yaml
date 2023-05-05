@@ -1,0 +1,97 @@
+openapi: "3.0.0"
+info:
+  title: Open-Meteo API
+  version: 1.0.0
+  description: An API for obtaining weather forecasts for a specific geographical location.
+servers:
+  - url: https://api.open-meteo.com/
+paths:
+  /v1/forecast:
+    get:
+      summary: Get weather forecast
+      parameters:
+        - name: latitude
+          in: query
+          description: Geographical WGS84 coordinate of the location
+          required: true
+          schema:
+            type: number
+        - name: longitude
+          in: query
+          description: Geographical WGS84 coordinate of the location
+          required: true
+          schema:
+            type: number
+        - name: hourly
+          in: query
+          description: A list of weather variables which should be returned.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - name: daily
+          in: query
+          description: A list of daily weather variable aggregations which should be returned.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - name: current_weather
+          in: query
+          description: Include current weather conditions in the JSON output.
+          required: false
+          schema:
+            type: boolean
+        - name: temperature_unit
+          in: query
+          description: If fahrenheit is set, all temperature values are converted to Fahrenheit.
+          required: false
+          schema:
+            type: string
+        - name: windspeed_unit
+          in: query
+          description: Other wind speed speed units - ms, mph and kn
+          required: false
+          schema:
+            type: string
+        - name: precipitation_unit
+          in: query
+          description: Other precipitation amount units - inch
+          required: false
+          schema:
+            type: string
+        - name: timeformat
+          in: query
+          description: If format unixtime is selected, all time values are returned in UNIX epoch time in seconds. Please note that all timestamp are in GMT+0! For daily values with unix timestamps, please apply utc_offset_seconds again to get the correct date.
+          required: false
+          schema:
+            type: string
+        - name: timezone
+          in: query
+          description: If timezone is set, all timestamps are returned as local-time and data is returned starting at 00:00 local-time. Any time zone name from the time zone database is supported. If auto is set as a time zone, the coordinates will be automatically resolved to the local time zone.
+          required: false
+          schema:
+            type: string
+        - name: past_days
+          in: query
+          description: If past_days is set, yesterday or the day before yesterday data are also returned.
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  latitude:
+                    type: number
+                  longitude:
+                    type: number
+                  hourly:
+                    type
+
