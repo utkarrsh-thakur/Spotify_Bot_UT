@@ -4,7 +4,7 @@ import spotipy.util as util
 from langchain.requests import RequestsWrapper
 from langchain.agents.agent_toolkits.openapi.spec import reduce_openapi_spec
 from langchain.agents.agent_toolkits.openapi import planner
-from langchain.agents import initialize_agent, Tool
+from langchain.agents import Tool
 from langchain.chat_models import ChatOpenAI
 from langchain.agents import Tool, AgentExecutor, LLMSingleActionAgent, AgentOutputParser
 from langchain.prompts import StringPromptTemplate
@@ -12,12 +12,14 @@ from langchain import LLMChain
 from typing import List, Union
 from langchain.schema import AgentAction, AgentFinish
 import re
+from langchain.tools.json.tool import JsonSpec
 
 llm = ChatOpenAI(model_name = "gpt-3.5-turbo",temperature=0.2, verbose = True)
 
 with open("spotify_openapi.yaml", encoding= 'utf-8') as f:
     raw_spotify_api_spec = yaml.load(f, Loader=yaml.Loader)
 spotify_api_spec = reduce_openapi_spec(raw_spotify_api_spec)
+json_spec = JsonSpec(dict_=raw_spotify_api_spec, max_value_length=5000)
 
 def construct_spotify_auth_headers(raw_spec: dict):
     scopes = list(raw_spec['components']['securitySchemes']['oauth_2_0']['flows']['authorizationCode']['scopes'].keys())
@@ -137,4 +139,4 @@ agent = LLMSingleActionAgent(
     allowed_tools=tool_names
 )
 agent_executor = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True)
-agent_executor.run('tell me one Weeknd song?')
+agent_executor.run('tell me one song of ariana grande?')
