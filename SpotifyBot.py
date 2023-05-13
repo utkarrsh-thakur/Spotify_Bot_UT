@@ -6,12 +6,10 @@ from langchain.agents.agent_toolkits.openapi.spec import reduce_openapi_spec
 from spotipy.oauth2 import SpotifyOAuth
 from langchain.llms.openai import OpenAI
 from langchain.agents.agent_toolkits.openapi import planner
-from langchain.tools.json.tool import JsonSpec
 
 with open("spotify_openapi.yaml", encoding= 'utf-8') as f:
     raw_spotify_api_spec = yaml.load(f, Loader=yaml.Loader)
 spotify_api_spec = reduce_openapi_spec(raw_spotify_api_spec)
-json_spec = JsonSpec(dict_=raw_spotify_api_spec, max_value_length=4000)
 
 def construct_spotify_auth_headers(raw_spec: dict):
     scopes = list(raw_spec['components']['securitySchemes']['oauth_2_0']['flows']['authorizationCode']['scopes'].keys())
@@ -26,6 +24,6 @@ requests_wrapper = RequestsWrapper(headers=headers)
 llm = OpenAI(model_name = "gpt-3.5-turbo",temperature=0.2)
 
 spotify_agent = planner.create_openapi_agent(spotify_api_spec, requests_wrapper, llm)
-user_query = "What are 2 famous taylor swift songs?"
+user_query = "Who is the singer of god's plan?"
 spotify_agent.run(user_query)
 
